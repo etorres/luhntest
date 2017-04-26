@@ -3,16 +3,19 @@ package org.github.etorres.luhntest;
 import javaslang.Function1;
 import javaslang.collection.List;
 import javaslang.collection.Seq;
+import javaslang.control.Option;
+import javaslang.control.Try;
 
-public class NumberReverser<T extends Number> implements SequenceReverser<T> {
+public interface NumberReverser<T extends Number> {
 
-    private static Function1<Number, Seq<Character>> reverseDigits = n -> List
-            .ofAll(String.valueOf(n).toCharArray()).reverse();
+    Function1<Number, Seq<Character>> getDigits = n -> Try.of(() ->
+            List.ofAll(String.valueOf(Option.of(n).get()).toCharArray()))
+            .getOrElse(List.empty());
 
-    @Override
-    public T reverse(Number sequence) {
-        // TODO
-        return null;
-    }
+    Function1<Seq<Character>, Seq<Character>> reverse = Seq::reverse;
+
+    Function1<Number, Seq<Character>> getDigitsAndReverse = getDigits.andThen(reverse);
+
+    Seq<Character> reverseDigits(T sequence);
 
 }
