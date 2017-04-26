@@ -5,6 +5,8 @@ import javaslang.Function1;
 public class LuhnVerifier {
 
     public boolean verify(long number) {
+
+
         // TODO
         return false;
     }
