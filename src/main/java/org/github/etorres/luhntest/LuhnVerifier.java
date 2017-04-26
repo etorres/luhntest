@@ -10,39 +10,38 @@ public class LuhnVerifier {
 
     private final static Predicate<Tuple2<Byte, Long>> isOddPosition = t -> t._2%2 == 0;
 
-    private final  static Function1<Seq<Byte>, Seq<Tuple2<Byte, Long>>> digitsWithIndex =
+    private final static Predicate<Tuple2<Byte, Long>> isEvenPosition = t -> t._2%2 != 0;
+
+    private final static Function1<Seq<Byte>, Seq<Tuple2<Byte, Long>>> digitsWithIndex =
             Seq::zipWithIndex;
 
-    private final  static Function1<Seq<Tuple2<Byte, Long>>, Byte> sumOddDigits = s -> s
+    private final static Function1<Seq<Tuple2<Byte, Long>>, Byte> sumOddDigits = s -> s
             .filter(isOddPosition)
             .map(Tuple2::_1)
             .fold((byte)0, (d1, d2) -> (byte)(d1 + d2));
 
+    private final static Function1<Number, Byte> sumDigits = NumberReverser.getDigits
+            .andThen(s -> s.fold((byte)0, (d1, d2) -> (byte)(d1 + d2)));
+
+    private final static Function1<Seq<Tuple2<Byte, Long>>, Byte> computeEventDigits = s -> s
+            .filter(isEvenPosition)
+            .map(t -> {
+                byte twoTimes = (byte)(2*t._1);
+                return twoTimes > 9 ? sumDigits.apply(twoTimes) : twoTimes;
+            })
+            .fold((byte)0, (d1, d2) -> (byte)(d1 + d2));
+
     public boolean verify(long number) {
+        // Reverse the digits
         Seq<Byte> reversedDigits = new LongReverser().reverseDigits(number);
+        // Sum the odd digits
         Function1<Seq<Byte>, Seq<Tuple2<Byte, Long>>> memDigitsWithIndex = Function1
                 .of(digitsWithIndex).memoized();
         Seq<Tuple2<Byte, Long>> digitsWithIndexTuple = memDigitsWithIndex.apply(reversedDigits);
-        Byte oddSum = sumOddDigits.apply(digitsWithIndexTuple);
-
-
-
-//        Reverse the digits:
-//
-//>    61789372994
-//                > Sum the odd digits:
-//>    6 + 7 + 9 + 7 + 9 + 4 = 42 = s1
-//                >    The even digits:
-//>    1,  8,  3,  2,  9
-//                >    Two times each even digit:
-//>    2, 16,  6,  4, 18
-//                >      Sum the digits of each multiplication:
-//>    2,  7,  6,  4,  9
-//                >      Sum the last:
-//>    2 + 7 + 6 + 4 + 9 = 28 = s2
-
-        // TODO
-        return false;
+        Byte s1 = sumOddDigits.apply(digitsWithIndexTuple);
+        // Compute the even digits
+        Byte s2 = computeEventDigits.apply(digitsWithIndexTuple);
+        return (s1 + s2)%10 == 0;
     }
 
 }
