@@ -8,14 +8,17 @@ import javaslang.control.Try;
 
 public interface NumberReverser<T extends Number> {
 
-    Function1<Number, Seq<Character>> getDigits = n -> Try.of(() ->
+    Function1<Number, Seq<Byte>> getDigits = n -> Try.of(() ->
             List.ofAll(String.valueOf(Option.of(n).get()).toCharArray()))
-            .getOrElse(List.empty());
+            .getOrElse(List.empty())
+            .map(d -> Byte.parseByte(d.toString()));
 
-    Function1<Seq<Character>, Seq<Character>> reverse = Seq::reverse;
+    Function1<Seq<Byte>, Seq<Byte>> reverse = Seq::reverse;
 
-    Function1<Number, Seq<Character>> getDigitsAndReverse = getDigits.andThen(reverse);
+    Function1<Number, Seq<Byte>> getDigitsAndReverse = getDigits.andThen(reverse);
 
-    Seq<Character> reverseDigits(T sequence);
+    default Seq<Byte> reverseDigits(T number) {
+        return getDigitsAndReverse.apply(number);
+    }
 
 }

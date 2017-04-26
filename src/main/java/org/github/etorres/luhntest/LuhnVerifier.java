@@ -1,11 +1,29 @@
 package org.github.etorres.luhntest;
 
+import javaslang.Function1;
+import javaslang.Tuple2;
 import javaslang.collection.Seq;
+
+import java.util.function.Predicate;
 
 public class LuhnVerifier {
 
+    private final static Predicate<Tuple2<Byte, Long>> isOddPosition = t -> t._2%2 == 0;
+
+    private final  static Function1<Seq<Byte>, Seq<Tuple2<Byte, Long>>> digitsWithIndex =
+            Seq::zipWithIndex;
+
+    private final  static Function1<Seq<Tuple2<Byte, Long>>, Byte> sumOddDigits = s -> s
+            .filter(isOddPosition)
+            .map(Tuple2::_1)
+            .fold((byte)0, (d1, d2) -> (byte)(d1 + d2));
+
     public boolean verify(long number) {
-        Seq<Character> reversedDigits = new LongReverser().reverseDigits(number);
+        Seq<Byte> reversedDigits = new LongReverser().reverseDigits(number);
+        Function1<Seq<Byte>, Seq<Tuple2<Byte, Long>>> memDigitsWithIndex = Function1
+                .of(digitsWithIndex).memoized();
+        Seq<Tuple2<Byte, Long>> digitsWithIndexTuple = memDigitsWithIndex.apply(reversedDigits);
+        Byte oddSum = sumOddDigits.apply(digitsWithIndexTuple);
 
 
 
