@@ -4,7 +4,6 @@ import javaslang.Function1;
 import javaslang.collection.Seq;
 import mockit.Deencapsulation;
 import mockit.integration.junit4.JMockit;
-import org.github.etorres.luhntest.LongReverser;
 import org.github.etorres.luhntest.NumberReverser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,14 +28,6 @@ public class NumberReverserTest {
                 .getField(NumberReverser.class,"getDigits");
         Seq<Byte> digits = getDigits.apply(null);
         assertThat(digits).isEmpty();
-    }
-
-    @Test
-    public void whenReverseDigits_thenCorrect() throws Exception {
-        LongReverser longReverser = new LongReverser();
-        Seq<Byte> reversedDigits = longReverser.reverseDigits(49927398716L);
-        assertThat(reversedDigits).hasSize(11)
-                .containsExactly(new Byte[]{ 6, 1, 7, 8, 9, 3, 7, 2, 9, 9, 4 });
     }
 
 }

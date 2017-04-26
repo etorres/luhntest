@@ -39,7 +39,6 @@ public class LuhnVerifier {
     private final static Function1<Seq<Tuple2<Byte, Long>>, Boolean> verifyLuhn = s ->
             (sumOddDigits.apply(s) + computeEventDigits.apply(s))%10 == 0;
 
-
     public boolean verify(long number) {
         return verifyLuhn.apply(Function1.of(digitsWithIndex).memoized()
                 .apply(getDigitsAndReverse.apply(number)));
