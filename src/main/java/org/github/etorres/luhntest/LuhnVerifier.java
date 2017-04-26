@@ -36,21 +36,13 @@ public class LuhnVerifier {
             })
             .fold((byte)0, sumDigits);
 
-//    private final static Function1<Long, Boolean> verifyLuhn = n -> getDigitsAndReverse.apply(n)
-//            .andThen()
-    // TODO
+    private final static Function1<Seq<Tuple2<Byte, Long>>, Boolean> verifyLuhn = s ->
+            (sumOddDigits.apply(s) + computeEventDigits.apply(s))%10 == 0;
+
 
     public boolean verify(long number) {
-        // Reverse the digits
-        Seq<Byte> reversedDigits = new LongReverser().reverseDigits(number);
-        // Sum the odd digits
-        Function1<Seq<Byte>, Seq<Tuple2<Byte, Long>>> memDigitsWithIndex = Function1
-                .of(digitsWithIndex).memoized();
-        Seq<Tuple2<Byte, Long>> digitsWithIndexTuple = memDigitsWithIndex.apply(reversedDigits);
-        Byte s1 = sumOddDigits.apply(digitsWithIndexTuple);
-        // Compute the even digits
-        Byte s2 = computeEventDigits.apply(digitsWithIndexTuple);
-        return (s1 + s2)%10 == 0;
+        return verifyLuhn.apply(Function1.of(digitsWithIndex).memoized()
+                .apply(getDigitsAndReverse.apply(number)));
     }
 
 }

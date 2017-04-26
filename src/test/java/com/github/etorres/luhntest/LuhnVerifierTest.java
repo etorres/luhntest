@@ -46,4 +46,11 @@ public class LuhnVerifierTest {
         assertThat(result).isTrue();
     }
 
+    @Test
+    public void whenVerifyNonLuhnNumber_thenCorrect() throws Exception {
+        LuhnVerifier luhnVerifier = new LuhnVerifier();
+        boolean result = luhnVerifier.verify(49927398717L);
+        assertThat(result).isFalse();
+    }
+
 }
