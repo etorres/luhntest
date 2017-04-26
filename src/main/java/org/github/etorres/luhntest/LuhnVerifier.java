@@ -4,6 +4,7 @@ import javaslang.Function1;
 import javaslang.Tuple2;
 import javaslang.collection.Seq;
 
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public class LuhnVerifier {
@@ -15,21 +16,23 @@ public class LuhnVerifier {
     private final static Function1<Seq<Byte>, Seq<Tuple2<Byte, Long>>> digitsWithIndex =
             Seq::zipWithIndex;
 
+    private final static BiFunction<Byte, Byte, Byte> sumDigits = (d1, d2) -> (byte)(d1 + d2);
+
+    private final static Function1<Number, Byte> getDigitsAndSum = NumberReverser.getDigits
+            .andThen(s -> s.fold((byte)0, sumDigits));
+
     private final static Function1<Seq<Tuple2<Byte, Long>>, Byte> sumOddDigits = s -> s
             .filter(isOddPosition)
             .map(Tuple2::_1)
-            .fold((byte)0, (d1, d2) -> (byte)(d1 + d2));
-
-    private final static Function1<Number, Byte> sumDigits = NumberReverser.getDigits
-            .andThen(s -> s.fold((byte)0, (d1, d2) -> (byte)(d1 + d2)));
+            .fold((byte)0, sumDigits);
 
     private final static Function1<Seq<Tuple2<Byte, Long>>, Byte> computeEventDigits = s -> s
             .filter(isEvenPosition)
             .map(t -> {
                 byte twoTimes = (byte)(2*t._1);
-                return twoTimes > 9 ? sumDigits.apply(twoTimes) : twoTimes;
+                return twoTimes > 9 ? getDigitsAndSum.apply(twoTimes) : twoTimes;
             })
-            .fold((byte)0, (d1, d2) -> (byte)(d1 + d2));
+            .fold((byte)0, sumDigits);
 
     public boolean verify(long number) {
         // Reverse the digits
