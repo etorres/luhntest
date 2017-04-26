@@ -7,6 +7,8 @@ import javaslang.collection.Seq;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
+import static org.github.etorres.luhntest.NumberReverser.getDigitsAndReverse;
+
 public class LuhnVerifier {
 
     private final static Predicate<Tuple2<Byte, Long>> isOddPosition = t -> t._2%2 == 0;
@@ -33,6 +35,10 @@ public class LuhnVerifier {
                 return twoTimes > 9 ? getDigitsAndSum.apply(twoTimes) : twoTimes;
             })
             .fold((byte)0, sumDigits);
+
+//    private final static Function1<Long, Boolean> verifyLuhn = n -> getDigitsAndReverse.apply(n)
+//            .andThen()
+    // TODO
 
     public boolean verify(long number) {
         // Reverse the digits
