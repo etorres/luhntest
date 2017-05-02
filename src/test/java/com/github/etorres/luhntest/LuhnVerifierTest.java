@@ -17,26 +17,26 @@ public class LuhnVerifierTest {
 
     @Test
     public void whenSumTheOddDigits_thenCorrect() throws Exception {
-        Function1<Seq<Byte>, Seq<Tuple2<Byte, Long>>> digitsWithIndex = Deencapsulation
+        Function1<Seq<Integer>, Seq<Tuple2<Integer, Long>>> digitsWithIndex = Deencapsulation
                 .getField(LuhnVerifier.class, "digitsWithIndex");
-        Seq<Tuple2<Byte, Long>> digitsWithIndexTuple = digitsWithIndex
-                .apply(List.of(new Byte[]{ 6, 1, 7, 8, 9, 3, 7, 2, 9, 9, 4 }));
-        Function1<Seq<Tuple2<Byte, Long>>, Byte> sumOddDigits = Deencapsulation
+        Seq<Tuple2<Integer, Long>> digitsWithIndexTuple = digitsWithIndex
+                .apply(List.of(6, 1, 7, 8, 9, 3, 7, 2, 9, 9, 4));
+        Function1<Seq<Tuple2<Integer, Long>>, Integer> sumOddDigits = Deencapsulation
                 .getField(LuhnVerifier.class, "sumOddDigits");
-        Byte sum = sumOddDigits.apply(digitsWithIndexTuple);
-        assertThat(sum).isEqualTo(Byte.valueOf((byte)42));
+        Integer sum = sumOddDigits.apply(digitsWithIndexTuple);
+        assertThat(sum).isEqualTo(Integer.valueOf(42));
     }
 
     @Test
     public void whenComputeTheEvenDigits_thenCorrect() throws Exception {
-        Function1<Seq<Byte>, Seq<Tuple2<Byte, Long>>> digitsWithIndex = Deencapsulation
+        Function1<Seq<Integer>, Seq<Tuple2<Integer, Long>>> digitsWithIndex = Deencapsulation
                 .getField(LuhnVerifier.class, "digitsWithIndex");
-        Seq<Tuple2<Byte, Long>> digitsWithIndexTuple = digitsWithIndex
-                .apply(List.of(new Byte[]{ 6, 1, 7, 8, 9, 3, 7, 2, 9, 9, 4 }));
-        Function1<Seq<Tuple2<Byte, Long>>, Byte> computeEventDigits = Deencapsulation
+        Seq<Tuple2<Integer, Long>> digitsWithIndexTuple = digitsWithIndex
+                .apply(List.of(6, 1, 7, 8, 9, 3, 7, 2, 9, 9, 4));
+        Function1<Seq<Tuple2<Integer, Long>>, Integer> computeEventDigits = Deencapsulation
                 .getField(LuhnVerifier.class, "computeEventDigits");
-        Byte computed = computeEventDigits.apply(digitsWithIndexTuple);
-        assertThat(computed).isEqualTo(Byte.valueOf((byte)28));
+        Integer computed = computeEventDigits.apply(digitsWithIndexTuple);
+        assertThat(computed).isEqualTo(Integer.valueOf(28));
     }
 
     @Test

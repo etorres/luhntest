@@ -15,18 +15,18 @@ public class NumberReverserTest {
 
     @Test
     public void whenGetDigits_thenCorrect() throws Exception {
-        Function1<Number, Seq<Byte>> getDigits = Deencapsulation
+        Function1<Number, Seq<Integer>> getDigits = Deencapsulation
                 .getField(NumberReverser.class,"getDigits");
-        Seq<Byte> digits = getDigits.apply(49927398716L);
+        Seq<Integer> digits = getDigits.apply(49927398716L);
         assertThat(digits).hasSize(11)
-                .containsExactly(new Byte[]{ 4, 9, 9, 2, 7, 3, 9, 8, 7, 1, 6 });
+                .containsExactly(4, 9, 9, 2, 7, 3, 9, 8, 7, 1, 6);
     }
 
     @Test
     public void whenGetDigitsFromNull_thenGetEmptyList() throws Exception {
-        Function1<Number, Seq<Byte>> getDigits = Deencapsulation
+        Function1<Number, Seq<Integer>> getDigits = Deencapsulation
                 .getField(NumberReverser.class,"getDigits");
-        Seq<Byte> digits = getDigits.apply(null);
+        Seq<Integer> digits = getDigits.apply(null);
         assertThat(digits).isEmpty();
     }
 
